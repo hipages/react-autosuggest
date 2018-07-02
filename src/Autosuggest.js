@@ -273,6 +273,7 @@ export default class Autosuggest extends Component {
 
   onDocumentMouseDown = event => {
     this.justClickedOnSuggestionsContainer = false;
+    this.justClickedOnSeccionTitle = false;
 
     let node =
       (event.detail && event.detail.target) || // This is for testing only. Please show me a better way to emulate this.
@@ -282,6 +283,10 @@ export default class Autosuggest extends Component {
       if (node.getAttribute('data-suggestion-index') !== null) {
         // Suggestion was clicked
         return;
+      }
+
+      if (node.className.includes('section-title')) {
+        this.justClickedOnSeccionTitle = true;
       }
 
       if (node === this.suggestionsContainer) {
@@ -498,7 +503,8 @@ export default class Autosuggest extends Component {
       onFocus: event => {
         if (
           !this.justSelectedSuggestion &&
-          !this.justClickedOnSuggestionsContainer
+          !this.justClickedOnSuggestionsContainer &&
+          !this.justClickedOnSeccionTitle
         ) {
           const shouldRender = shouldRenderSuggestions(value);
 
@@ -515,7 +521,7 @@ export default class Autosuggest extends Component {
         }
       },
       onBlur: event => {
-        if (this.justClickedOnSuggestionsContainer) {
+        if (this.justClickedOnSuggestionsContainer && !this.justClickedOnSeccionTitle) {
           this.input.focus();
           return;
         }
